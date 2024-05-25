@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "y564mBLryC2jwtATjgPK4r5fLl4b3d2WZuJvLRGv3js=",
+  "Source": "Vista",
+  "BasePath": "_content/Vista",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Vista/wwwroot",
+      "Source": "Vista",
+      "ContentRoot": "/home/ab/Documents/dotnet/Vista/wwwroot/",
+      "BasePath": "_content/Vista",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}
