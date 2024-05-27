@@ -1,12 +1,15 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace Vista.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +21,8 @@ namespace Vista.Migrations
                 name: "categories",
                 columns: table => new
                 {
-                    category_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    category_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     category_name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -48,16 +52,16 @@ namespace Vista.Migrations
                 {
                     video_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
                     video_name = table.Column<string>(type: "text", nullable: false),
-                    video_length = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    video_length = table.Column<string>(type: "text", nullable: false),
                     video_url = table.Column<string>(type: "text", nullable: false),
                     video_thumbnail_url = table.Column<string>(type: "text", nullable: false),
                     video_description = table.Column<string>(type: "text", nullable: false),
                     likes = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     dislikes = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     views = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
-                    upload_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "Now()"),
+                    upload_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "Now()"),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    category_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    category_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,37 +81,12 @@ namespace Vista.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LikeAndDislike",
-                columns: table => new
-                {
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    video_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    like_or_dislike = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LikeAndDislike", x => new { x.user_id, x.video_id });
-                    table.ForeignKey(
-                        name: "FK_LikeAndDislike_users_user_id",
-                        column: x => x.user_id,
-                        principalTable: "users",
-                        principalColumn: "user_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_LikeAndDislike_videos_video_id",
-                        column: x => x.video_id,
-                        principalTable: "videos",
-                        principalColumn: "video_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "comments",
                 columns: table => new
                 {
                     comment_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
                     content = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "Now()"),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "Now()"),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     video_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -129,12 +108,37 @@ namespace Vista.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "likes_and_dislikes",
+                columns: table => new
+                {
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    video_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    like_or_dislike = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_likes_and_dislikes", x => new { x.user_id, x.video_id });
+                    table.ForeignKey(
+                        name: "FK_likes_and_dislikes_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_likes_and_dislikes_videos_video_id",
+                        column: x => x.video_id,
+                        principalTable: "videos",
+                        principalColumn: "video_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "watched_videos",
                 columns: table => new
                 {
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     video_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    viewed_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "Now()")
+                    viewed_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "Now()")
                 },
                 constraints: table =>
                 {
@@ -153,10 +157,23 @@ namespace Vista.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_LikeAndDislike_video_id",
-                table: "LikeAndDislike",
-                column: "video_id");
+            migrationBuilder.InsertData(
+                table: "categories",
+                columns: new[] { "category_id", "category_name" },
+                values: new object[,]
+                {
+                    { 1, "Sports" },
+                    { 2, "Photography" },
+                    { 3, "Travel" },
+                    { 4, "Cooking" },
+                    { 5, "Movies" },
+                    { 6, "Music" },
+                    { 7, "Art" },
+                    { 8, "Reading" },
+                    { 9, "Writing" },
+                    { 10, "Dancing" },
+                    { 11, "Gaming" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_comments_user_id",
@@ -166,6 +183,11 @@ namespace Vista.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_comments_video_id",
                 table: "comments",
+                column: "video_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_likes_and_dislikes_video_id",
+                table: "likes_and_dislikes",
                 column: "video_id");
 
             migrationBuilder.CreateIndex(
@@ -200,10 +222,10 @@ namespace Vista.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "LikeAndDislike");
+                name: "comments");
 
             migrationBuilder.DropTable(
-                name: "comments");
+                name: "likes_and_dislikes");
 
             migrationBuilder.DropTable(
                 name: "watched_videos");

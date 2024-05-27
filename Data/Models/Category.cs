@@ -8,7 +8,7 @@ public class Category
 {
     [Key]
     [Column("category_id")]
-    public Guid CategoryId { get; set; }
+    public int CategoryId { get; set; }
 
     [Column("category_name")]
     public string CategoryName { get; set; } = string.Empty;

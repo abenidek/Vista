@@ -12,8 +12,8 @@ using Vista.Data.AppDbContext;
 namespace Vista.Migrations
 {
     [DbContext(typeof(VistaDbContext))]
-    [Migration("20240524204550_initial")]
-    partial class initial
+    [Migration("20240527121416_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,11 +28,12 @@ namespace Vista.Migrations
 
             modelBuilder.Entity("Vista.Data.Models.Category", b =>
                 {
-                    b.Property<Guid>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("category_id")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("integer")
+                        .HasColumnName("category_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
@@ -42,6 +43,63 @@ namespace Vista.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            CategoryName = "Sports"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            CategoryName = "Photography"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            CategoryName = "Travel"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            CategoryName = "Cooking"
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            CategoryName = "Movies"
+                        },
+                        new
+                        {
+                            CategoryId = 6,
+                            CategoryName = "Music"
+                        },
+                        new
+                        {
+                            CategoryId = 7,
+                            CategoryName = "Art"
+                        },
+                        new
+                        {
+                            CategoryId = 8,
+                            CategoryName = "Reading"
+                        },
+                        new
+                        {
+                            CategoryId = 9,
+                            CategoryName = "Writing"
+                        },
+                        new
+                        {
+                            CategoryId = 10,
+                            CategoryName = "Dancing"
+                        },
+                        new
+                        {
+                            CategoryId = 11,
+                            CategoryName = "Gaming"
+                        });
                 });
 
             modelBuilder.Entity("Vista.Data.Models.Comment", b =>
@@ -59,7 +117,7 @@ namespace Vista.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("Now()");
 
@@ -98,7 +156,7 @@ namespace Vista.Migrations
 
                     b.HasIndex("VideoId");
 
-                    b.ToTable("LikeAndDislike");
+                    b.ToTable("likes_and_dislikes");
                 });
 
             modelBuilder.Entity("Vista.Data.Models.User", b =>
@@ -152,8 +210,8 @@ namespace Vista.Migrations
                         .HasColumnName("video_id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid")
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer")
                         .HasColumnName("category_id");
 
                     b.Property<int>("Dislikes")
@@ -175,7 +233,7 @@ namespace Vista.Migrations
 
                     b.Property<DateTime>("UploadDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("upload_date")
                         .HasDefaultValueSql("Now()");
 
@@ -188,8 +246,9 @@ namespace Vista.Migrations
                         .HasColumnType("text")
                         .HasColumnName("video_description");
 
-                    b.Property<TimeOnly>("VideoLength")
-                        .HasColumnType("time without time zone")
+                    b.Property<string>("VideoLength")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("video_length");
 
                     b.Property<string>("VideoName")
@@ -229,7 +288,7 @@ namespace Vista.Migrations
 
                     b.Property<DateTime>("ViewedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("viewed_at")
                         .HasDefaultValueSql("Now()");
 

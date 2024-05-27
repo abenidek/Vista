@@ -14,7 +14,7 @@ namespace Vista.Data.Models;
         public string VideoName { get; set;} = string.Empty;
 
         [Column("video_length")]
-        public TimeOnly VideoLength { get; set;}
+        public string VideoLength { get; set;} = string.Empty;
 
         [Column("video_url")]
         public string VideoUrl { get; set;} = string.Empty;
@@ -43,7 +43,7 @@ namespace Vista.Data.Models;
 
         [Column("category_id")]
         [ForeignKey("Category")]
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
         public User? User { get; set; }
         public Category? Category{ get; set; }
