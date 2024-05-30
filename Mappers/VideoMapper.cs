@@ -16,6 +16,7 @@ public static class VideoMapper
             Likes = video.Likes,
             Dislikes = video.Dislikes,
             UploadDate = video.UploadDate,
+            Comments = video.Comments!.Select(c => c.ToCommentDto()).ToList(),
             CategoryId = video.CategoryId,
             UserId = video.UserId,
         };
@@ -30,6 +31,7 @@ public static class VideoMapper
             VideoLength = video.VideoLength,
             Views = video.Views,
             UploadDate = video.UploadDate,
+            UserName = video.User!.UserName,
             UserId = video.UserId,
             CategoryId = video.CategoryId,
         };

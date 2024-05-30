@@ -1,14 +1,6 @@
 {
   "Files": [
     {
-      "Id": "/home/ab/Documents/dotnet/Vista/wwwroot/Thumbnails/website.jpeg",
-      "PackagePath": "staticwebassets/Thumbnails/website.jpeg"
-    },
-    {
-      "Id": "/home/ab/Documents/dotnet/Vista/wwwroot/Videos/Untitleddesign.mp4",
-      "PackagePath": "staticwebassets/Videos/Untitleddesign.mp4"
-    },
-    {
       "Id": "/home/ab/Documents/dotnet/Vista/wwwroot/Videos/php.mp4",
       "PackagePath": "staticwebassets/Videos/php.mp4"
     },

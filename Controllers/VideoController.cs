@@ -14,6 +14,7 @@ public class VideoController(IVideoRepository _videoRepo) : ControllerBase
     public async Task<IActionResult> GetAllAsync()
     {
         var Videos = await _videoRepo.GetAllAsync();
+
         return Ok(Videos);
     }
 
@@ -31,9 +32,20 @@ public class VideoController(IVideoRepository _videoRepo) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CreateVideoDto videoDto)
     {
-        await _videoRepo.CreateAsync(videoDto);
+        var Video = await _videoRepo.CreateAsync(videoDto);
 
-        var Video = videoDto.ToVideoModel();
+        return CreatedAtAction(nameof(GetByIdAsync), new { id = Video.VideoId }, Video.ToVideoDetailDto());
+    }
+
+    [HttpPut]
+    [Route("{id}")]
+    public async Task<IActionResult> UpdateAsync([FromBody] UpdateVideoDto videoDto, Guid id)
+    {
+        var Video = await _videoRepo.UpdateAsync(id, videoDto);
+
+        if(Video is null)
+            return NotFound();
+
         return CreatedAtAction(nameof(GetByIdAsync), new { id = Video.VideoId }, Video.ToVideoDetailDto());
     }
 

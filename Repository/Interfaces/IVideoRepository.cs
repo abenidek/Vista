@@ -8,5 +8,6 @@ public interface IVideoRepository
     Task<List<VideoSummaryDto>> GetAllAsync();
     Task<VideoDetailDto?> GetByIdAsync(Guid id);
     Task<Video> CreateAsync(CreateVideoDto video);
+    Task<Video?> UpdateAsync(Guid id, UpdateVideoDto video);
     Task<Video?> DeleteAsync(Guid id);
 }

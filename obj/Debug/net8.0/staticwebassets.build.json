@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "qLWlDCUCMlmupShdxsm3ZsiDxehCaBnpbDMjVpdra+c=",
+  "Hash": "NNFSMyBIcylKoVVm9d3VWRNNJ9/OTF0cGUUhivrfIlM=",
   "Source": "Vista",
   "BasePath": "_content/Vista",
   "Mode": "Default",
@@ -16,25 +16,6 @@
     }
   ],
   "Assets": [
-    {
-      "Identity": "/home/ab/Documents/dotnet/Vista/wwwroot/Thumbnails/website.jpeg",
-      "SourceId": "Vista",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ab/Documents/dotnet/Vista/wwwroot/",
-      "BasePath": "_content/Vista",
-      "RelativePath": "Thumbnails/website.jpeg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Thumbnails/website.jpeg"
-    },
     {
       "Identity": "/home/ab/Documents/dotnet/Vista/wwwroot/Videos/php.mp4",
       "SourceId": "Vista",
@@ -53,25 +34,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/Videos/php.mp4"
-    },
-    {
-      "Identity": "/home/ab/Documents/dotnet/Vista/wwwroot/Videos/Untitleddesign.mp4",
-      "SourceId": "Vista",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ab/Documents/dotnet/Vista/wwwroot/",
-      "BasePath": "_content/Vista",
-      "RelativePath": "Videos/Untitleddesign.mp4",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Videos/Untitleddesign.mp4"
     }
   ]
 }

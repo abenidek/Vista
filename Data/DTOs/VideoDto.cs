@@ -10,6 +10,7 @@ public record VideoDetailDto
     public int Dislikes { get; set; }
     public int Views { get; set; }
     public DateTime UploadDate { get; set; }
+    public List<CommentDto>? Comments { get; set; }
     public Guid UserId { get; set; }
     public int CategoryId { get; set; }
 }
@@ -22,11 +23,13 @@ public record VideoSummaryDto
     public string ThumbnailUrl { get; set;} = string.Empty;
     public int Views { get; set; }
     public DateTime UploadDate { get; set; }
+    public string UserName { get; set; } = string.Empty;
     public Guid UserId { get; set; }
     public int CategoryId { get; set; }
 }
 
-public record CreateVideoDto{
+public record CreateVideoDto
+{
     public string VideoName { get; set; } = string.Empty;
     public string VideoUrl { get; set; } = string.Empty;
     public string VideoDescription { get; set; } = string.Empty;
@@ -34,4 +37,12 @@ public record CreateVideoDto{
     public string VideoLength { get; set;} = string.Empty;
     public Guid UserId { get; set; }
     public int CategoryId { get; set; }
+}
+
+public record UpdateVideoDto
+{
+    public string VideoName { get; set; } = string.Empty;
+    public string VideoDescription { get; set; } = string.Empty;
+    public int CategoryId { get; set; }
+    public string ThumbnailUrl { get; set;} = string.Empty;
 }

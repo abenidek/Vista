@@ -8,14 +8,16 @@ namespace Vista.Repository
 {
     public class VideoRepository(VistaDbContext _context) : IVideoRepository
     {
+        private readonly VistaDbContext _context = _context;
+
         public async Task<List<VideoSummaryDto>> GetAllAsync()
         {
-            return await _context.Videos.Select(vid => vid.ToVideoSummaryDto()).ToListAsync();
+            return await _context.Videos.Include(vid => vid.User).Select(vid => vid.ToVideoSummaryDto()).ToListAsync();
         }
 
         public async Task<VideoDetailDto?> GetByIdAsync(Guid id)
         {
-            var Video = await _context.Videos.FindAsync(id);
+            var Video = await _context.Videos.Include(v => v.Comments!).ThenInclude(c => c.User).FirstOrDefaultAsync(v => v.VideoId == id);
 
             if (Video == null)
                 return null;
@@ -28,6 +30,23 @@ namespace Vista.Repository
             var Video = videoDto.ToVideoModel();
             await _context.Videos.AddAsync(Video);
             await _context.SaveChangesAsync();
+            return Video;
+        }
+
+        public async Task<Video?> UpdateAsync(Guid id, UpdateVideoDto video)
+        {
+            var Video = await _context.Videos.FindAsync(id);
+
+            if (Video == null)
+                return null;
+
+            Video.VideoName = video.VideoName;
+            Video.VideoDescription = video.VideoDescription;
+            Video.CategoryId = video.CategoryId;
+            Video.ThumbnailUrl = video.ThumbnailUrl;
+
+            await _context.SaveChangesAsync();
+
             return Video;
         }
 
