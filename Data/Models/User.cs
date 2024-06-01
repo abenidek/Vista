@@ -29,5 +29,5 @@ public class User
     public ICollection<LikeAndDislike>? LikesAndDislikes { get; set; }
     public ICollection<WatchedVideo>? WatchedVideos { get; set; }
     public ICollection<Comment>? Comments { get; set; }
-
+    public ICollection<UserFollower>? Followers { get; set; }
 }

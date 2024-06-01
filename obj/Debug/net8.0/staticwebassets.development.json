@@ -1,1 +1,1 @@
-{"ContentRoots":["/home/ab/Documents/dotnet/Vista/wwwroot/"],"Root":{"Children":{"Videos":{"Children":{"php.mp4":{"Children":null,"Asset":{"ContentRootIndex":0,"SubPath":"Videos/php.mp4"},"Patterns":null}},"Asset":null,"Patterns":null}},"Asset":null,"Patterns":[{"ContentRootIndex":0,"Pattern":"**","Depth":0}]}}
+{"ContentRoots":["/home/ab/Documents/dotnet/Vista/wwwroot/"],"Root":{"Children":null,"Asset":null,"Patterns":[{"ContentRootIndex":0,"Pattern":"**","Depth":0}]}}

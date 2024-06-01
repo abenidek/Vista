@@ -199,6 +199,23 @@ namespace Vista.Migrations
                     b.ToTable("users");
                 });
 
+            modelBuilder.Entity("Vista.Data.Models.UserFollower", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid>("FollowerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("follower_id");
+
+                    b.HasKey("UserId", "FollowerId");
+
+                    b.HasIndex("FollowerId");
+
+                    b.ToTable("followers");
+                });
+
             modelBuilder.Entity("Vista.Data.Models.Video", b =>
                 {
                     b.Property<Guid>("VideoId")
@@ -334,6 +351,25 @@ namespace Vista.Migrations
                     b.Navigation("Video");
                 });
 
+            modelBuilder.Entity("Vista.Data.Models.UserFollower", b =>
+                {
+                    b.HasOne("Vista.Data.Models.User", "FollowerUser")
+                        .WithMany()
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vista.Data.Models.User", "User")
+                        .WithMany("Followers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FollowerUser");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Vista.Data.Models.Video", b =>
                 {
                     b.HasOne("Vista.Data.Models.Category", "Category")
@@ -375,6 +411,8 @@ namespace Vista.Migrations
             modelBuilder.Entity("Vista.Data.Models.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Followers");
 
                     b.Navigation("LikesAndDislikes");
 

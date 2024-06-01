@@ -11,6 +11,7 @@ namespace Vista.Data.AppDbContext
         public DbSet<Comment> Comments { get; set; }
         public DbSet<LikeAndDislike> LikesAndDislikes { get; set; }
         public DbSet<WatchedVideo> WatchedVideos { get; set; }
+        public DbSet<UserFollower> UserFollowers { get; set; }
 
         public VistaDbContext(DbContextOptions<VistaDbContext> options) : base(options)
         {
@@ -66,6 +67,20 @@ namespace Vista.Data.AppDbContext
             {
                 wv.HasKey(wv => new { wv.UserId, wv.VideoId });
                 wv.Property(wv => wv.ViewedAt).HasDefaultValueSql("Now()");
+            });
+
+            modelBuilder.Entity<UserFollower>(fu =>
+            {
+                fu.HasKey(f => new { f.UserId, f.FollowerId });
+
+                fu.HasOne(f => f.FollowerUser)
+                    .WithMany()
+                    .HasForeignKey(f => f.FollowerId)
+                    .OnDelete(DeleteBehavior.Cascade);    
+                
+                fu.HasOne(f => f.User)
+                    .WithMany(u => u.Followers)
+                    .HasForeignKey(f => f.UserId);
             });
         }
     }

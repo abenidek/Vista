@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Vista.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class FollowerCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,6 +44,30 @@ namespace Vista.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_users", x => x.user_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "followers",
+                columns: table => new
+                {
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    follower_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_followers", x => new { x.user_id, x.follower_id });
+                    table.ForeignKey(
+                        name: "FK_followers_users_follower_id",
+                        column: x => x.follower_id,
+                        principalTable: "users",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_followers_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -186,6 +210,11 @@ namespace Vista.Migrations
                 column: "video_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_followers_follower_id",
+                table: "followers",
+                column: "follower_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_likes_and_dislikes_video_id",
                 table: "likes_and_dislikes",
                 column: "video_id");
@@ -223,6 +252,9 @@ namespace Vista.Migrations
         {
             migrationBuilder.DropTable(
                 name: "comments");
+
+            migrationBuilder.DropTable(
+                name: "followers");
 
             migrationBuilder.DropTable(
                 name: "likes_and_dislikes");

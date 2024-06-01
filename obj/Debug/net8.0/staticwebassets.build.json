@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "NNFSMyBIcylKoVVm9d3VWRNNJ9/OTF0cGUUhivrfIlM=",
+  "Hash": "y564mBLryC2jwtATjgPK4r5fLl4b3d2WZuJvLRGv3js=",
   "Source": "Vista",
   "BasePath": "_content/Vista",
   "Mode": "Default",
@@ -15,25 +15,5 @@
       "Pattern": "**"
     }
   ],
-  "Assets": [
-    {
-      "Identity": "/home/ab/Documents/dotnet/Vista/wwwroot/Videos/php.mp4",
-      "SourceId": "Vista",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ab/Documents/dotnet/Vista/wwwroot/",
-      "BasePath": "_content/Vista",
-      "RelativePath": "Videos/php.mp4",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Videos/php.mp4"
-    }
-  ]
+  "Assets": []
 }
