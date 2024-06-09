@@ -87,14 +87,38 @@ namespace Vista.Repository
             if (Video == null)
                 return null;
 
-            Video.VideoName = video.VideoName;
-            Video.VideoDescription = video.VideoDescription;
-            Video.CategoryId = video.CategoryId;
-            Video.ThumbnailUrl = video.ThumbnailUrl;
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                if (File.Exists(Video.ThumbnailUrl))
+                    File.Delete(Video.ThumbnailUrl);
 
-            return Video;
+                var ThumbnailPath = Path.Combine(_env.WebRootPath, "Thumbnails");
+                if (!Directory.Exists(ThumbnailPath))
+                    Directory.CreateDirectory(ThumbnailPath);
+
+                var ThumbnailFilePath = Path.Combine(ThumbnailPath, video.ThumbnailFile.FileName);
+                using (var stream = new FileStream(ThumbnailFilePath, FileMode.Create))
+                {
+                    await video.ThumbnailFile.CopyToAsync(stream);
+                }
+
+                Video.ThumbnailUrl = ThumbnailFilePath;
+                Video.VideoName = video.VideoName;
+                Video.VideoDescription = video.VideoDescription;
+                Video.CategoryId = video.CategoryId;
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Video;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<Video?> DeleteAsync(Guid id)
@@ -104,9 +128,27 @@ namespace Vista.Repository
             if (Video == null)
                 return null;
 
-            _context.Videos.Remove(Video);
-            await _context.SaveChangesAsync();
-            return Video;
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                if (File.Exists(Video.VideoUrl))
+                    File.Delete(Video.VideoUrl);
+
+                if (File.Exists(Video.ThumbnailUrl))
+                    File.Delete(Video.ThumbnailUrl);
+
+                _context.Videos.Remove(Video);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Video;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

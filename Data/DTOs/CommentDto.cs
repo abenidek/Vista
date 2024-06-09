@@ -1,4 +1,6 @@
-﻿namespace Vista;
+﻿using Vista.Data.DTOs;
+
+namespace Vista;
 
 public record CommentDto
 {
@@ -6,7 +8,7 @@ public record CommentDto
     public required string Content { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid VideoId { get; set; }
-    public required string UserName { get; set; }
+    public UserDto? User { get; set; }
 }
 
 public record CreateCommentDto

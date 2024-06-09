@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "pfYjLePwDxAYoJNz3AsNBi6dMf1zUaZQeHbpKnsbf5A=",
+  "Hash": "y564mBLryC2jwtATjgPK4r5fLl4b3d2WZuJvLRGv3js=",
   "Source": "Vista",
   "BasePath": "_content/Vista",
   "Mode": "Default",
@@ -15,63 +15,5 @@
       "Pattern": "**"
     }
   ],
-  "Assets": [
-    {
-      "Identity": "/home/ab/Documents/dotnet/Vista/wwwroot/ProfilePics/wallpaperflare.com_wallpaper.jpg",
-      "SourceId": "Vista",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ab/Documents/dotnet/Vista/wwwroot/",
-      "BasePath": "_content/Vista",
-      "RelativePath": "ProfilePics/wallpaperflare.com_wallpaper.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/ProfilePics/wallpaperflare.com_wallpaper.jpg"
-    },
-    {
-      "Identity": "/home/ab/Documents/dotnet/Vista/wwwroot/Thumbnails/Screenshot from 2024-04-19 22-27-55.png",
-      "SourceId": "Vista",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ab/Documents/dotnet/Vista/wwwroot/",
-      "BasePath": "_content/Vista",
-      "RelativePath": "Thumbnails/Screenshot from 2024-04-19 22-27-55.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Thumbnails/Screenshot from 2024-04-19 22-27-55.png"
-    },
-    {
-      "Identity": "/home/ab/Documents/dotnet/Vista/wwwroot/Videos/php.mp4",
-      "SourceId": "Vista",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ab/Documents/dotnet/Vista/wwwroot/",
-      "BasePath": "_content/Vista",
-      "RelativePath": "Videos/php.mp4",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Videos/php.mp4"
-    }
-  ]
+  "Assets": []
 }

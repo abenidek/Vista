@@ -38,7 +38,7 @@ public class VideoController(IVideoRepository _videoRepo) : ControllerBase
         if (Video is null)
             return BadRequest();
 
-        return Ok(Video.ToVideoSummaryDto());
+        return Ok(Video);
     }
 
     [HttpPut]

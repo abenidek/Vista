@@ -11,7 +11,7 @@ public static class CommentMapper
             Content = commentModel.Content,
             CreatedAt = commentModel.CreatedAt,
             VideoId = commentModel.VideoId,
-            UserName = commentModel.User?.UserName!
+            User = commentModel.User!.ToUserDto()
         };
     }
 

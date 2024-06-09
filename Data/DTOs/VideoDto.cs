@@ -42,5 +42,5 @@ public record UpdateVideoDto
     public string VideoName { get; set; } = string.Empty;
     public string VideoDescription { get; set; } = string.Empty;
     public int CategoryId { get; set; }
-    public string ThumbnailUrl { get; set;} = string.Empty;
+    public required IFormFile ThumbnailFile { get; set; }
 }

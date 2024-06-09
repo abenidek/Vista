@@ -1,12 +1,8 @@
 {
   "Files": [
     {
-      "Id": "/home/ab/Documents/dotnet/Vista/wwwroot/ProfilePics/wallpaperflare.com_wallpaper.jpg",
-      "PackagePath": "staticwebassets/ProfilePics/wallpaperflare.com_wallpaper.jpg"
-    },
-    {
-      "Id": "/home/ab/Documents/dotnet/Vista/wwwroot/Thumbnails/Screenshot from 2024-04-19 22-27-55.png",
-      "PackagePath": "staticwebassets/Thumbnails/Screenshot from 2024-04-19 22-27-55.png"
+      "Id": "/home/ab/Documents/dotnet/Vista/wwwroot/Thumbnails/wallpaperflare.com_wallpaper.jpg",
+      "PackagePath": "staticwebassets/Thumbnails/wallpaperflare.com_wallpaper.jpg"
     },
     {
       "Id": "/home/ab/Documents/dotnet/Vista/wwwroot/Videos/php.mp4",
