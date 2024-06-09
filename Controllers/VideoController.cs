@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vista.Data.DTOs;
 using Vista.Data.Models;
+using Vista.Mappers;
 using Vista.Repository.Interfaces;
 
 namespace Vista.Controllers;
@@ -30,11 +31,14 @@ public class VideoController(IVideoRepository _videoRepo) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateVideoDto videoDto)
+    public async Task<IActionResult> CreateAsync([FromForm] CreateVideoDto videoDto)
     {
         var Video = await _videoRepo.CreateAsync(videoDto);
 
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = Video.VideoId }, Video.ToVideoDetailDto());
+        if (Video is null)
+            return BadRequest();
+
+        return Ok(Video.ToVideoSummaryDto());
     }
 
     [HttpPut]
@@ -46,7 +50,7 @@ public class VideoController(IVideoRepository _videoRepo) : ControllerBase
         if(Video is null)
             return NotFound();
 
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = Video.VideoId }, Video.ToVideoDetailDto());
+        return NoContent();
     }
 
     [HttpDelete]

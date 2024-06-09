@@ -76,7 +76,7 @@ namespace Vista.Data.AppDbContext
                 fu.HasOne(f => f.FollowerUser)
                     .WithMany()
                     .HasForeignKey(f => f.FollowerId)
-                    .OnDelete(DeleteBehavior.Cascade);    
+                    .OnDelete(DeleteBehavior.Restrict);    
                 
                 fu.HasOne(f => f.User)
                     .WithMany(u => u.Followers)

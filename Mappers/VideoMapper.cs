@@ -1,7 +1,7 @@
 ﻿using Vista.Data.DTOs;
 using Vista.Data.Models;
 
-namespace Vista;
+namespace Vista.Mappers;
 
 public static class VideoMapper
 {
@@ -17,8 +17,8 @@ public static class VideoMapper
             Dislikes = video.Dislikes,
             UploadDate = video.UploadDate,
             Comments = video.Comments!.Select(c => c.ToCommentDto()).ToList(),
-            CategoryId = video.CategoryId,
-            UserId = video.UserId,
+            User = video.User!.ToUserDto(),
+            CategoryId = video.CategoryId
         };
     }
 
@@ -31,9 +31,8 @@ public static class VideoMapper
             VideoLength = video.VideoLength,
             Views = video.Views,
             UploadDate = video.UploadDate,
-            UserName = video.User!.UserName,
-            UserId = video.UserId,
-            CategoryId = video.CategoryId,
+            User = video.User!.ToUserDto(),
+            CategoryId = video.CategoryId
         };
     }
 
@@ -42,9 +41,6 @@ public static class VideoMapper
         return new Video{
             VideoName = createVideoDto.VideoName,
             VideoDescription = createVideoDto.VideoDescription,
-            VideoUrl = createVideoDto.VideoUrl,
-            ThumbnailUrl = createVideoDto.ThumbnailUrl,
-            VideoLength = createVideoDto.VideoLength,
             UserId = createVideoDto.UserId,
             CategoryId = createVideoDto.CategoryId
         };

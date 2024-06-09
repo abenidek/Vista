@@ -17,13 +17,13 @@ public class User
     public string Email { get; set; } = string.Empty;
 
     [Column("username")]
-    public string UserName { get; set; } = string.Empty;
+    public required string UserName { get; set; }
 
     [Column("password")]
     public string Password { get; set; } = string.Empty;
 
-    [Column("dob")]
-    public DateOnly DateOfBirth { get; set; }
+    [Column("profile_pic_url")]
+    public string? ProfilePicUrl { get; set; }
 
     public ICollection<Video>? Videos { get; set; }
     public ICollection<LikeAndDislike>? LikesAndDislikes { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vista.Data.Models;
+using Vista.Mappers;
 
 namespace Vista;
 

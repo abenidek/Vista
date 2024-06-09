@@ -23,6 +23,13 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.2" />
+    <PackageReference Include="Xabe.FFmpeg" Version="5.2.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot/ProfilePics/" />
+    <Folder Include="wwwroot/Thumbnails/" />
+    <Folder Include="wwwroot/Videos/" />
   </ItemGroup>
 
 </Project>

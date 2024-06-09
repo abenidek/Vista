@@ -1,6 +1,6 @@
 ﻿using Vista.Data.Models;
 
-namespace Vista;
+namespace Vista.Mappers;
 
 public static class CommentMapper
 {

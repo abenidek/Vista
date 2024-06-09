@@ -114,3 +114,5 @@
 /home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.genruntimeconfig.cache
 /home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/ref/Vista.dll
 /home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.sourcelink.json
+/home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Newtonsoft.Json.dll
+/home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Xabe.FFmpeg.dll

@@ -12,8 +12,8 @@ using Vista.Data.AppDbContext;
 namespace Vista.Migrations
 {
     [DbContext(typeof(VistaDbContext))]
-    [Migration("20240601181520_FollowerCreate")]
-    partial class FollowerCreate
+    [Migration("20240609135652_UserUpdate")]
+    partial class UserUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,10 +167,6 @@ namespace Vista.Migrations
                         .HasColumnName("user_id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
-                    b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("date")
-                        .HasColumnName("dob");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text")
@@ -185,6 +181,10 @@ namespace Vista.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("password");
+
+                    b.Property<string>("ProfilePicUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("profile_pic_url");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -359,7 +359,7 @@ namespace Vista.Migrations
                     b.HasOne("Vista.Data.Models.User", "FollowerUser")
                         .WithMany()
                         .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Vista.Data.Models.User", "User")
