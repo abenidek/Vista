@@ -47,8 +47,8 @@ namespace Vista.Data.Models;
 
         public User? User { get; set; }
         public Category? Category{ get; set; }
-
-        public ICollection<LikeAndDislike>? LikesAndDislikes { get; set; }
+        public ICollection<LikedVideo>? LikedVideos { get; set; }
+        public ICollection<DislikedVideo>? DislikedVideos { get; set; }
         public ICollection<WatchedVideo>? WatchedVideos { get; set; }
         public ICollection<Comment>? Comments { get; set; }
      }

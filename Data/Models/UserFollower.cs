@@ -5,14 +5,14 @@ namespace Vista.Data.Models;
 [Table("followers")]
 public class UserFollower
 {
-    [Column("user_id")]
-    [ForeignKey("User")]
-    public Guid UserId { get; set; }
+    [Column("followed_user_id")]
+    [ForeignKey("FollowedUser")]
+    public Guid FollowedUserId { get; set; }
 
-    [Column("follower_id")]
+    [Column("follower_user_id")]
     [ForeignKey("FollowerUser")]
-    public Guid FollowerId { get; set; }
+    public Guid FollowerUserId { get; set; }
 
-    public User? User { get; set; }
+    public User? FollowedUser { get; set; }
     public User? FollowerUser { get; set; }
 }

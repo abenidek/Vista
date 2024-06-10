@@ -22,11 +22,21 @@ public class User
     [Column("password")]
     public string Password { get; set; } = string.Empty;
 
+    [Column("bio")]
+    public string? Bio { get; set; }
+
+    [Column("followers")]
+    public int FollowersCount { get; set; }
+
+    [Column("following")]
+    public int FollowingCount { get; set; }
+
     [Column("profile_pic_url")]
     public string? ProfilePicUrl { get; set; }
 
     public ICollection<Video>? Videos { get; set; }
-    public ICollection<LikeAndDislike>? LikesAndDislikes { get; set; }
+    public ICollection<LikedVideo>? LikedVideos { get; set; }
+    public ICollection<DislikedVideo>? DislikedVideos { get; set; }
     public ICollection<WatchedVideo>? WatchedVideos { get; set; }
     public ICollection<Comment>? Comments { get; set; }
     public ICollection<UserFollower>? Followers { get; set; }

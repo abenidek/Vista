@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Vista.Migrations
 {
     /// <inheritdoc />
-    public partial class UserUpdate : Migration
+    public partial class DatabaseUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,6 +39,9 @@ namespace Vista.Migrations
                     email = table.Column<string>(type: "text", nullable: false),
                     username = table.Column<string>(type: "text", nullable: false),
                     password = table.Column<string>(type: "text", nullable: false),
+                    bio = table.Column<string>(type: "text", nullable: true),
+                    followers = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    following = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     profile_pic_url = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -50,24 +53,24 @@ namespace Vista.Migrations
                 name: "followers",
                 columns: table => new
                 {
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    follower_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    followed_user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    follower_user_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_followers", x => new { x.user_id, x.follower_id });
+                    table.PrimaryKey("PK_followers", x => new { x.followed_user_id, x.follower_user_id });
                     table.ForeignKey(
-                        name: "FK_followers_users_follower_id",
-                        column: x => x.follower_id,
-                        principalTable: "users",
-                        principalColumn: "user_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_followers_users_user_id",
-                        column: x => x.user_id,
+                        name: "FK_followers_users_followed_user_id",
+                        column: x => x.followed_user_id,
                         principalTable: "users",
                         principalColumn: "user_id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_followers_users_follower_user_id",
+                        column: x => x.follower_user_id,
+                        principalTable: "users",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -132,24 +135,47 @@ namespace Vista.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "likes_and_dislikes",
+                name: "disliked_video",
                 columns: table => new
                 {
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    video_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    like_or_dislike = table.Column<bool>(type: "boolean", nullable: false)
+                    video_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_likes_and_dislikes", x => new { x.user_id, x.video_id });
+                    table.PrimaryKey("PK_disliked_video", x => new { x.user_id, x.video_id });
                     table.ForeignKey(
-                        name: "FK_likes_and_dislikes_users_user_id",
+                        name: "FK_disliked_video_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "user_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_likes_and_dislikes_videos_video_id",
+                        name: "FK_disliked_video_videos_video_id",
+                        column: x => x.video_id,
+                        principalTable: "videos",
+                        principalColumn: "video_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "liked_video",
+                columns: table => new
+                {
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    video_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_liked_video", x => new { x.user_id, x.video_id });
+                    table.ForeignKey(
+                        name: "FK_liked_video_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_liked_video_videos_video_id",
                         column: x => x.video_id,
                         principalTable: "videos",
                         principalColumn: "video_id",
@@ -210,13 +236,18 @@ namespace Vista.Migrations
                 column: "video_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_followers_follower_id",
-                table: "followers",
-                column: "follower_id");
+                name: "IX_disliked_video_video_id",
+                table: "disliked_video",
+                column: "video_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_likes_and_dislikes_video_id",
-                table: "likes_and_dislikes",
+                name: "IX_followers_follower_user_id",
+                table: "followers",
+                column: "follower_user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_liked_video_video_id",
+                table: "liked_video",
                 column: "video_id");
 
             migrationBuilder.CreateIndex(
@@ -254,10 +285,13 @@ namespace Vista.Migrations
                 name: "comments");
 
             migrationBuilder.DropTable(
+                name: "disliked_video");
+
+            migrationBuilder.DropTable(
                 name: "followers");
 
             migrationBuilder.DropTable(
-                name: "likes_and_dislikes");
+                name: "liked_video");
 
             migrationBuilder.DropTable(
                 name: "watched_videos");

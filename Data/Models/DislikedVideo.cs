@@ -2,8 +2,8 @@
 
 namespace Vista.Data.Models;
 
-[Table("likes_and_dislikes")]
-public class LikeAndDislike
+[Table("disliked_video")]
+public class DislikedVideo
 {
     [Column("user_id")]
     [ForeignKey("User")]
@@ -12,9 +12,6 @@ public class LikeAndDislike
     [Column("video_id")]
     [ForeignKey("Video")]
     public Guid VideoId { get; set; }
-
-    [Column("like_or_dislike")]
-    public bool LikeOrDislike{ get; set; }
 
     public User? User { get; set; }
     public Video? Video { get; set; }

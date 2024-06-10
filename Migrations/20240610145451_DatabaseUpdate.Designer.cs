@@ -12,8 +12,8 @@ using Vista.Data.AppDbContext;
 namespace Vista.Migrations
 {
     [DbContext(typeof(VistaDbContext))]
-    [Migration("20240609135652_UserUpdate")]
-    partial class UserUpdate
+    [Migration("20240610145451_DatabaseUpdate")]
+    partial class DatabaseUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,7 +138,7 @@ namespace Vista.Migrations
                     b.ToTable("comments");
                 });
 
-            modelBuilder.Entity("Vista.Data.Models.LikeAndDislike", b =>
+            modelBuilder.Entity("Vista.Data.Models.DislikedVideo", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -148,15 +148,28 @@ namespace Vista.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("video_id");
 
-                    b.Property<bool>("LikeOrDislike")
-                        .HasColumnType("boolean")
-                        .HasColumnName("like_or_dislike");
+                    b.HasKey("UserId", "VideoId");
+
+                    b.HasIndex("VideoId");
+
+                    b.ToTable("disliked_video");
+                });
+
+            modelBuilder.Entity("Vista.Data.Models.LikedVideo", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid>("VideoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("video_id");
 
                     b.HasKey("UserId", "VideoId");
 
                     b.HasIndex("VideoId");
 
-                    b.ToTable("likes_and_dislikes");
+                    b.ToTable("liked_video");
                 });
 
             modelBuilder.Entity("Vista.Data.Models.User", b =>
@@ -167,10 +180,26 @@ namespace Vista.Migrations
                         .HasColumnName("user_id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("text")
+                        .HasColumnName("bio");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("email");
+
+                    b.Property<int>("FollowersCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("followers");
+
+                    b.Property<int>("FollowingCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("following");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -204,17 +233,17 @@ namespace Vista.Migrations
 
             modelBuilder.Entity("Vista.Data.Models.UserFollower", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("FollowedUserId")
                         .HasColumnType("uuid")
-                        .HasColumnName("user_id");
+                        .HasColumnName("followed_user_id");
 
-                    b.Property<Guid>("FollowerId")
+                    b.Property<Guid>("FollowerUserId")
                         .HasColumnType("uuid")
-                        .HasColumnName("follower_id");
+                        .HasColumnName("follower_user_id");
 
-                    b.HasKey("UserId", "FollowerId");
+                    b.HasKey("FollowedUserId", "FollowerUserId");
 
-                    b.HasIndex("FollowerId");
+                    b.HasIndex("FollowerUserId");
 
                     b.ToTable("followers");
                 });
@@ -335,16 +364,35 @@ namespace Vista.Migrations
                     b.Navigation("Video");
                 });
 
-            modelBuilder.Entity("Vista.Data.Models.LikeAndDislike", b =>
+            modelBuilder.Entity("Vista.Data.Models.DislikedVideo", b =>
                 {
                     b.HasOne("Vista.Data.Models.User", "User")
-                        .WithMany("LikesAndDislikes")
+                        .WithMany("DislikedVideos")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Vista.Data.Models.Video", "Video")
-                        .WithMany("LikesAndDislikes")
+                        .WithMany("DislikedVideos")
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Video");
+                });
+
+            modelBuilder.Entity("Vista.Data.Models.LikedVideo", b =>
+                {
+                    b.HasOne("Vista.Data.Models.User", "User")
+                        .WithMany("LikedVideos")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vista.Data.Models.Video", "Video")
+                        .WithMany("LikedVideos")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -356,21 +404,21 @@ namespace Vista.Migrations
 
             modelBuilder.Entity("Vista.Data.Models.UserFollower", b =>
                 {
-                    b.HasOne("Vista.Data.Models.User", "FollowerUser")
-                        .WithMany()
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Vista.Data.Models.User", "User")
+                    b.HasOne("Vista.Data.Models.User", "FollowedUser")
                         .WithMany("Followers")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FollowedUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("FollowerUser");
+                    b.HasOne("Vista.Data.Models.User", "FollowerUser")
+                        .WithMany()
+                        .HasForeignKey("FollowerUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("FollowedUser");
+
+                    b.Navigation("FollowerUser");
                 });
 
             modelBuilder.Entity("Vista.Data.Models.Video", b =>
@@ -415,9 +463,11 @@ namespace Vista.Migrations
                 {
                     b.Navigation("Comments");
 
+                    b.Navigation("DislikedVideos");
+
                     b.Navigation("Followers");
 
-                    b.Navigation("LikesAndDislikes");
+                    b.Navigation("LikedVideos");
 
                     b.Navigation("Videos");
 
@@ -428,7 +478,9 @@ namespace Vista.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("LikesAndDislikes");
+                    b.Navigation("DislikedVideos");
+
+                    b.Navigation("LikedVideos");
 
                     b.Navigation("WatchedVideos");
                 });

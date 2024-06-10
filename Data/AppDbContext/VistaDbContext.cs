@@ -9,7 +9,8 @@ namespace Vista.Data.AppDbContext
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categorys { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<LikeAndDislike> LikesAndDislikes { get; set; }
+        public DbSet<LikedVideo> LikedVideos { get; set; }
+        public DbSet<DislikedVideo> DislikedVideos { get; set; }
         public DbSet<WatchedVideo> WatchedVideos { get; set; }
         public DbSet<UserFollower> UserFollowers { get; set; }
 
@@ -36,6 +37,8 @@ namespace Vista.Data.AppDbContext
                 u.Property(e => e.UserId).HasDefaultValueSql("uuid_generate_v4()");
                 u.HasIndex(e => e.UserName).IsUnique();
                 u.HasIndex(e => e.Email).IsUnique();
+                u.Property(e => e.FollowersCount).HasDefaultValue("0");
+                u.Property(e => e.FollowingCount).HasDefaultValue("0");
             });
 
             modelBuilder.Entity<Comment>(c =>
@@ -61,7 +64,9 @@ namespace Vista.Data.AppDbContext
                 );
             });
 
-            modelBuilder.Entity<LikeAndDislike>().HasKey(ld => new { ld.UserId, ld.VideoId });
+            modelBuilder.Entity<LikedVideo>().HasKey(l => new { l.UserId, l.VideoId });
+
+            modelBuilder.Entity<DislikedVideo>().HasKey(d => new { d.UserId, d.VideoId });
 
             modelBuilder.Entity<WatchedVideo>(wv =>
             {
@@ -71,16 +76,16 @@ namespace Vista.Data.AppDbContext
 
             modelBuilder.Entity<UserFollower>(fu =>
             {
-                fu.HasKey(f => new { f.UserId, f.FollowerId });
+                fu.HasKey(f => new { f.FollowedUserId, f.FollowerUserId });
 
                 fu.HasOne(f => f.FollowerUser)
                     .WithMany()
-                    .HasForeignKey(f => f.FollowerId)
+                    .HasForeignKey(f => f.FollowerUserId)
                     .OnDelete(DeleteBehavior.Restrict);    
                 
-                fu.HasOne(f => f.User)
+                fu.HasOne(f => f.FollowedUser)
                     .WithMany(u => u.Followers)
-                    .HasForeignKey(f => f.UserId);
+                    .HasForeignKey(f => f.FollowedUserId);
             });
         }
     }

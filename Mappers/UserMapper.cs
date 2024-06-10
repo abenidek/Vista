@@ -5,7 +5,8 @@ namespace Vista.Mappers;
 
 public static class UserMapper
 {
-    public static UserDto ToUserDto(this User user){
+    public static UserDto ToUserDto(this User user)
+    {
         return new UserDto
         {
             UserId = user.UserId,
@@ -21,6 +22,20 @@ public static class UserMapper
             Name = user.Name,
             Email = user.Email,
             UserName = user.UserName
+        };
+    }
+
+    public static ProfileDto ToProfileDto(this User user)
+    {
+        return new ProfileDto
+        {
+            UserId = user.UserId,
+            Name = user.Name,
+            UserName = user.UserName,
+            FollowersCount = user.FollowersCount,
+            Bio = user.Bio,
+            ProfilePicUrl = user.ProfilePicUrl,
+            Videos = user.Videos!.Select(v => v.ToVideoSummaryDto()).ToList()
         };
     }
 }
