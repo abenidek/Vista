@@ -6,10 +6,11 @@ using Vista.Repository.Interfaces;
 
 namespace Vista.Controllers;
 
-[Route("api/video")]
+[Route("/video")]
 [ApiController]
 public class VideoController(IVideoRepository _videoRepo) : ControllerBase
 {
+    public readonly IVideoRepository _videoRepo = _videoRepo;
 
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
@@ -63,5 +64,47 @@ public class VideoController(IVideoRepository _videoRepo) : ControllerBase
             return NotFound();
 
         return NoContent();
+    }
+
+    [HttpPut]
+    [Route("like/{id}")]
+    public async Task<IActionResult> LikeAsync([FromRoute] Guid id, Guid userId)
+    {
+        var Response = await _videoRepo.LikeVideoAsync(id, userId);
+
+        return Ok(Response);
+    }
+
+    [HttpPut]
+    [Route("dislike/{id}")]
+    public async Task<IActionResult> DislikeAsync([FromRoute] Guid id, Guid userId)
+    {
+        var Response = await _videoRepo.DislikeVideoAsync(id, userId);
+
+        return Ok(Response);
+    }
+
+    [HttpGet]
+    [Route("trending/")]
+    public async Task<IActionResult> GetTrendingAsync()
+    {
+        var Videos = await _videoRepo.GetTrendingVideosAsync();
+
+        if(Videos is null)
+            return NoContent();
+        
+        return Ok(Videos);
+    }
+
+    [HttpGet]
+    [Route("recommended/{id}")]
+    public async Task<IActionResult> GetRecommendedAsync([FromRoute] Guid id)
+    {
+        var Videos = await _videoRepo.GetRecommendedVideosAsync(id);
+
+        if(Videos is null)
+            return NoContent();
+        
+        return Ok(Videos);
     }
 }

@@ -4,7 +4,7 @@ using Vista.Mappers;
 
 namespace Vista;
 
-[Route("api/comment")]
+[Route("/comment")]
 [ApiController]
 public class CommentController(ICommentRepository _commentRepo) : ControllerBase
 {

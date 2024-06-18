@@ -5,10 +5,11 @@ using Vista.Repository.Interfaces;
 
 namespace Vista.Controllers;
 
-[Route("api/user")]
+[Route("/user")]
 [ApiController]
 public class UserController(IUserRepository _userRepo) : ControllerBase
 {
+    public readonly IUserRepository _userRepo = _userRepo;
 
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
@@ -31,7 +32,7 @@ public class UserController(IUserRepository _userRepo) : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProfileAsync([FromRoute] Guid id, Guid currentUserId)
     {
-        var User = await _userRepo.GetProfile(id, currentUserId);
+        var User = await _userRepo.GetProfileAsync(id, currentUserId);
 
         if (User is null)
             return NotFound();
@@ -39,10 +40,10 @@ public class UserController(IUserRepository _userRepo) : ControllerBase
         return Ok(User);
     }
 
-    [HttpGet("follower{id}")]
+    [HttpGet("follower/{id}")]
     public async Task<IActionResult> GetFollowersAsync([FromRoute] Guid id)
     {
-        var Followers = await _userRepo.GetFollowers(id);
+        var Followers = await _userRepo.GetFollowersAsync(id);
 
         if(Followers is null)
             return NotFound();
@@ -50,10 +51,10 @@ public class UserController(IUserRepository _userRepo) : ControllerBase
         return Ok(Followers);
     }
 
-    [HttpGet("following{id}")]
+    [HttpGet("following/{id}")]
     public async Task<IActionResult> GetFollowingAsync([FromRoute] Guid id)
     {
-        var Followings = await _userRepo.GetFollowing(id);
+        var Followings = await _userRepo.GetFollowingAsync(id);
 
         if(Followings is null)
             return NotFound();
@@ -62,10 +63,10 @@ public class UserController(IUserRepository _userRepo) : ControllerBase
     }
 
     [HttpPut]
-    [Route("follow{id}")]
+    [Route("follow/{id}")]
     public async Task<IActionResult> FollowUserAsync([FromRoute] Guid id, Guid currentUserId)
     {
-        var Response = await _userRepo.FollowUser(id, currentUserId);
+        var Response = await _userRepo.FollowUserAsync(id, currentUserId);
 
         return Ok(Response);
     }

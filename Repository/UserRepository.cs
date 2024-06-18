@@ -52,7 +52,7 @@ public class UserRepository(VistaDbContext _context, IWebHostEnvironment _env) :
         }
     }
 
-    public async Task<ProfileDto?> GetProfile(Guid userId, Guid currentUserId)
+    public async Task<ProfileDto?> GetProfileAsync(Guid userId, Guid currentUserId)
     {
         var User = await _context.Users.Include(u => u.Videos!).FirstOrDefaultAsync(u => u.UserId == userId);
 
@@ -64,7 +64,7 @@ public class UserRepository(VistaDbContext _context, IWebHostEnvironment _env) :
         return UserProfileDto;
     }
 
-    public async Task<List<UserDto>?> GetFollowers(Guid userId)
+    public async Task<List<UserDto>?> GetFollowersAsync(Guid userId)
     {
         var Followers = await _context.UserFollowers.Where(f => f.FollowedUserId == userId).Include(f => f.FollowerUser).Select(f => f.FollowerUser).ToListAsync();
 
@@ -75,7 +75,7 @@ public class UserRepository(VistaDbContext _context, IWebHostEnvironment _env) :
         return FollowerUsersDto!;
     }
 
-    public async Task<List<UserDto>?> GetFollowing(Guid userId)
+    public async Task<List<UserDto>?> GetFollowingAsync(Guid userId)
     {
         var Followings = await _context.UserFollowers.Where(f => f.FollowerUserId == userId).Include(f => f.FollowedUser).Select(f => f.FollowedUser).ToListAsync();
 
@@ -86,29 +86,39 @@ public class UserRepository(VistaDbContext _context, IWebHostEnvironment _env) :
         return FollowingUsersDto!;
     }
 
-    public async Task<string> FollowUser(Guid userId, Guid currentUserId)
+    public async Task<string> FollowUserAsync(Guid userId, Guid currentUserId)
     {
-        var User = await _context.UserFollowers.Include(f => f.FollowerUser).Include(f => f.FollowedUser).FirstOrDefaultAsync(f => f.FollowedUserId == userId && f.FollowerUserId == currentUserId);
-        var FollowedUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
-        var FollowerUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == currentUserId);
+        using var transaction = await _context.Database.BeginTransactionAsync();
 
-        if (User is null)
+        try
         {
-            await _context.UserFollowers.AddAsync(new UserFollower { FollowedUserId = userId, FollowerUserId = currentUserId });
+            var User = await _context.UserFollowers.FirstOrDefaultAsync(f => f.FollowedUserId == userId && f.FollowerUserId == currentUserId);
+            var FollowedUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            var FollowerUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == currentUserId);
 
-            FollowedUser!.FollowersCount++;
-            FollowerUser!.FollowingCount++;
+            if (User is null)
+            {
+                await _context.UserFollowers.AddAsync(new UserFollower { FollowedUserId = userId, FollowerUserId = currentUserId });
+
+                FollowedUser!.FollowersCount++;
+                FollowerUser!.FollowingCount++;
+
+                await _context.SaveChangesAsync();
+                return "User Followed";
+            }
+
+            _context.UserFollowers.Remove(User);
+
+            FollowedUser!.FollowersCount--;
+            FollowerUser!.FollowingCount--;
 
             await _context.SaveChangesAsync();
-            return "User Followed";
+            return "User Unfollowed";
         }
-
-        _context.UserFollowers.Remove(User);
-
-        FollowedUser!.FollowersCount--;
-        FollowerUser!.FollowingCount--;
-
-        await _context.SaveChangesAsync();
-        return "User Unfollowed";
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw new Exception(ex.Message);
+        }
     }
 }

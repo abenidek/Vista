@@ -1,3 +1,11 @@
+/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.csproj.AssemblyReference.cache
+/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.GeneratedMSBuildEditorConfig.editorconfig
+/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.AssemblyInfoInputs.cache
+/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.AssemblyInfo.cs
+/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.csproj.CoreCompileInputs.cache
+/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.MvcApplicationPartsAssemblyInfo.cs
+/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.MvcApplicationPartsAssemblyInfo.cache
+/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.sourcelink.json
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/appsettings.Development.json
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/appsettings.json
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Vista.staticwebassets.runtime.json
@@ -28,6 +36,7 @@
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Microsoft.OpenApi.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Mono.TextTemplating.dll
+/home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Newtonsoft.Json.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Npgsql.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
@@ -40,6 +49,7 @@
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/System.Composition.Runtime.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/System.Composition.TypedParts.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
+/home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Xabe.FFmpeg.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/cs/Microsoft.CodeAnalysis.resources.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/de/Microsoft.CodeAnalysis.resources.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/es/Microsoft.CodeAnalysis.resources.dll
@@ -92,13 +102,6 @@
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/tr/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll
-/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.csproj.AssemblyReference.cache
-/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.GeneratedMSBuildEditorConfig.editorconfig
-/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.AssemblyInfoInputs.cache
-/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.AssemblyInfo.cs
-/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.csproj.CoreCompileInputs.cache
-/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.MvcApplicationPartsAssemblyInfo.cs
-/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.MvcApplicationPartsAssemblyInfo.cache
 /home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/staticwebassets.build.json
 /home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/staticwebassets.development.json
 /home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/staticwebassets/msbuild.Vista.Microsoft.AspNetCore.StaticWebAssets.props
@@ -113,6 +116,3 @@
 /home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.pdb
 /home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.genruntimeconfig.cache
 /home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/ref/Vista.dll
-/home/ab/Documents/dotnet/Vista/obj/Debug/net8.0/Vista.sourcelink.json
-/home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Newtonsoft.Json.dll
-/home/ab/Documents/dotnet/Vista/bin/Debug/net8.0/Xabe.FFmpeg.dll
