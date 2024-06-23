@@ -6,10 +6,9 @@ using Vista.Mappers;
 
 namespace Vista;
 
-public class UserRepository(VistaDbContext _context, IWebHostEnvironment _env) : IUserRepository
+public class UserRepository(VistaDbContext _context) : IUserRepository
 {
     private readonly VistaDbContext _context = _context;
-    private readonly IWebHostEnvironment _env = _env;
 
     public async Task<List<UserDto>> GetAllAsync()
     {
@@ -20,36 +19,19 @@ public class UserRepository(VistaDbContext _context, IWebHostEnvironment _env) :
     {
         if (userDto is null)
             return null;
+        
+        var User = userDto.ToUserModel();
 
-        using var transaction = await _context.Database.BeginTransactionAsync();
+        var UserExist = await _context.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
 
-        try
+        if(UserExist is null)
         {
-            var User = userDto.ToUserModel();
-
-            var ProfilePicPath = Path.Combine(_env.WebRootPath, "ProfilePics");
-            if (!Directory.Exists(ProfilePicPath))
-                Directory.CreateDirectory(ProfilePicPath);
-
-            var ProfilePicFilePath = Path.Combine(ProfilePicPath, userDto.ProfilePicFile.FileName);
-            using (var stream = new FileStream(ProfilePicFilePath, FileMode.Create))
-            {
-                await userDto.ProfilePicFile.CopyToAsync(stream);
-            }
-
-            User.ProfilePicUrl = ProfilePicFilePath;
-
             await _context.Users.AddAsync(User);
             await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-
             return User;
         }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new Exception(ex.Message);
-        }
+
+        return UserExist;
     }
 
     public async Task<ProfileDto?> GetProfileAsync(Guid userId, Guid currentUserId)
@@ -61,6 +43,7 @@ public class UserRepository(VistaDbContext _context, IWebHostEnvironment _env) :
 
         var UserProfileDto = User?.ToProfileDto();
         UserProfileDto!.IsBeingFollowed = await _context.UserFollowers.AnyAsync(f => f.FollowedUserId == userId && f.FollowerUserId == currentUserId);
+        
         return UserProfileDto;
     }
 
@@ -104,6 +87,8 @@ public class UserRepository(VistaDbContext _context, IWebHostEnvironment _env) :
                 FollowerUser!.FollowingCount++;
 
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
                 return "User Followed";
             }
 
@@ -113,6 +98,8 @@ public class UserRepository(VistaDbContext _context, IWebHostEnvironment _env) :
             FollowerUser!.FollowingCount--;
 
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
             return "User Unfollowed";
         }
         catch (Exception ex)

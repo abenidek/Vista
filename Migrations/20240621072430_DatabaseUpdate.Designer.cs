@@ -12,7 +12,7 @@ using Vista.Data.AppDbContext;
 namespace Vista.Migrations
 {
     [DbContext(typeof(VistaDbContext))]
-    [Migration("20240610145451_DatabaseUpdate")]
+    [Migration("20240621072430_DatabaseUpdate")]
     partial class DatabaseUpdate
     {
         /// <inheritdoc />

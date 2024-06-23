@@ -9,10 +9,12 @@ public record VideoDetailDto
     public int Likes { get; set; }
     public int Dislikes { get; set; }
     public int Views { get; set; }
-    public DateTime UploadDate { get; set; }
+    public string UploadDate { get; set; } = string.Empty;
     public List<CommentDto>? Comments { get; set; }
     public UserDto? User { get; set; }
-    public int CategoryId { get; set; }
+    public bool isUserFollowed { get; set; }
+    public bool IsLiked { get; set; }
+    public bool IsDisliked { get; set; }
 }
 
 public record VideoSummaryDto
@@ -22,7 +24,7 @@ public record VideoSummaryDto
     public string VideoLength { get; set;} = string.Empty;
     public string ThumbnailUrl { get; set;} = string.Empty;
     public int Views { get; set; }
-    public DateTime UploadDate { get; set; }
+    public string UploadDate { get; set; } = string.Empty;
     public UserDto? User { get; set; }
     public int CategoryId { get; set; }
 }

@@ -19,7 +19,7 @@ public class UserController(IUserRepository _userRepo) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromForm] UserFromGoogleDto userDto)
+    public async Task<IActionResult> CreateAsync([FromBody] UserFromGoogleDto userDto)
     {
         var User = await _userRepo.CreateAsync(userDto);
 

@@ -15,7 +15,7 @@ builder.Services.AddDbContext<VistaDbContext>(
     opts => opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 2024 * 1024 * 1024);
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = long.MaxValue);
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();

@@ -6,8 +6,7 @@ public record CommentDto
 {
     public Guid Id { get; set; }
     public required string Content { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public Guid VideoId { get; set; }
+    public string PostDate { get; set; } = string.Empty;
     public UserDto? User { get; set; }
 }
 

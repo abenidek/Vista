@@ -15,17 +15,22 @@ namespace Vista.Repository
 
         public async Task<List<VideoSummaryDto>> GetAllAsync()
         {
-            return await _context.Videos.Include(vid => vid.User).Select(vid => vid.ToVideoSummaryDto()).ToListAsync();
+            return await _context.Videos.Include(vid => vid.User).Select(v => v.ToVideoSummaryDto()).ToListAsync();
         }
 
-        public async Task<VideoDetailDto?> GetByIdAsync(Guid id)
+        public async Task<VideoDetailDto?> GetByIdAsync(Guid id, Guid currentUserId)
         {
             var Video = await _context.Videos.Include(vid => vid.User).Include(v => v.Comments!).ThenInclude(c => c.User).FirstOrDefaultAsync(v => v.VideoId == id);
 
             if (Video == null)
                 return null;
 
-            return Video.ToVideoDetailDto();
+            var VideoDto = Video.ToVideoDetailDto();
+            VideoDto.IsLiked = await _context.LikedVideos.AnyAsync(v => v.VideoId == id && v.UserId == currentUserId);
+            VideoDto.IsDisliked = await _context.DislikedVideos.AnyAsync(v => v.VideoId == id && v.UserId == currentUserId);
+            VideoDto.isUserFollowed = await _context.UserFollowers.AnyAsync(f => f.FollowedUserId == Video.UserId && f.FollowerUserId == currentUserId);
+
+            return VideoDto;
         }
 
         public async Task<Video?> CreateAsync(CreateVideoDto videoDto)
@@ -33,20 +38,16 @@ namespace Vista.Repository
             if (videoDto is null)
                 return null;
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             try
             {
                 var Video = videoDto.ToVideoModel();
-                
-                await _context.Videos.AddAsync(Video);
-                await _context.SaveChangesAsync();
 
                 var videoPath = Path.Combine(_env.WebRootPath, "Videos");
                 if (!Directory.Exists(videoPath))
                     Directory.CreateDirectory(videoPath);
 
-                var VideoFilePath = Path.Combine(videoPath, videoDto.VideoFile.FileName);
+                var VideoFileExtension = Path.GetExtension(videoDto.VideoFile.FileName);
+                var VideoFilePath = Path.Combine(videoPath, $"{Guid.NewGuid()}{VideoFileExtension}");
                 using (var stream = new FileStream(VideoFilePath, FileMode.Create))
                 {
                     await videoDto.VideoFile.CopyToAsync(stream);
@@ -58,7 +59,8 @@ namespace Vista.Repository
                 if (!Directory.Exists(ThumbnailPath))
                     Directory.CreateDirectory(ThumbnailPath);
 
-                var ThumbnailFilePath = Path.Combine(ThumbnailPath, videoDto.ThumbnailFile.FileName);
+                var ThumbnailFileExtension = Path.GetExtension(videoDto.ThumbnailFile.FileName);
+                var ThumbnailFilePath = Path.Combine(ThumbnailPath, $"{Guid.NewGuid()}{ThumbnailFileExtension}");
                 using (var stream = new FileStream(ThumbnailFilePath, FileMode.Create))
                 {
                     await videoDto.ThumbnailFile.CopyToAsync(stream);
@@ -68,15 +70,15 @@ namespace Vista.Repository
 
                 var mediaInfo = await FFmpeg.GetMediaInfo(VideoFilePath);
                 var duration = mediaInfo.Duration;
-                Video.VideoLength = duration.ToString("mm':'ss");
+                Video.VideoLength = (duration.Hours < 1) ? duration.ToString("mm':'ss") : duration.ToString("hh':'mm':'ss'");
 
-                await transaction.CommitAsync();
+                await _context.Videos.AddAsync(Video);
+                await _context.SaveChangesAsync();
 
                 return Video;
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
                 throw new Exception(ex.Message);
             }
         }
@@ -88,10 +90,11 @@ namespace Vista.Repository
             if (Video == null)
                 return null;
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             try
             {
+                if (File.Exists(Video.ThumbnailUrl))
+                    File.Delete(Video.ThumbnailUrl);
+                    
                 var ThumbnailPath = Path.Combine(_env.WebRootPath, "Thumbnails");
                 if (!Directory.Exists(ThumbnailPath))
                     Directory.CreateDirectory(ThumbnailPath);
@@ -103,23 +106,17 @@ namespace Vista.Repository
                 Video.VideoDescription = video.VideoDescription;
                 Video.CategoryId = video.CategoryId;
 
-                await _context.SaveChangesAsync();
-                
-                if (File.Exists(Video.ThumbnailUrl))
-                    File.Delete(Video.ThumbnailUrl);
-
                 using (var stream = new FileStream(ThumbnailFilePath, FileMode.Create))
                 {
                     await video.ThumbnailFile.CopyToAsync(stream);
                 }
 
-                await transaction.CommitAsync();
+                await _context.SaveChangesAsync();
 
                 return Video;
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
                 throw new Exception(ex.Message);
             }
         }
@@ -131,8 +128,6 @@ namespace Vista.Repository
             if (Video == null)
                 return null;
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             try
             {
                 if (File.Exists(Video.VideoUrl))
@@ -143,13 +138,11 @@ namespace Vista.Repository
 
                 _context.Videos.Remove(Video);
                 await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
 
                 return Video;
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
                 throw new Exception(ex.Message);
             }
         }
@@ -252,7 +245,7 @@ namespace Vista.Repository
                 .OrderByDescending(v => v.Likes)
                 .ThenByDescending(v => v.UploadDate)
                 .ThenByDescending(v => v.Comments!.Count)
-                .Take(5)
+                .Take(4)
                 .ToListAsync();
             
             return Videos.Select(v => v.ToVideoSummaryDto()).ToList();
@@ -275,7 +268,7 @@ namespace Vista.Repository
                 .OrderByDescending(v => v.Likes)
                 .ThenByDescending(v => v.UploadDate)
                 .ThenByDescending(v => v.Comments!.Count)
-                .Take(10)
+                .Take(8)
                 .ToListAsync();
 
             return Videos.Select(v => v.ToVideoSummaryDto()).ToList();

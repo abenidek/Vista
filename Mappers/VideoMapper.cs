@@ -7,6 +7,8 @@ public static class VideoMapper
 {
     public static VideoDetailDto ToVideoDetailDto(this Video video)
     {
+        var dateDifference = DateTime.Now - video.UploadDate;
+
         return new VideoDetailDto{
             VideoId = video.VideoId,
             VideoName = video.VideoName,
@@ -15,22 +17,23 @@ public static class VideoMapper
             Views =  video.Views,
             Likes = video.Likes,
             Dislikes = video.Dislikes,
-            UploadDate = video.UploadDate,
+            UploadDate= dateDifference.FormatDateDifference(),
             Comments = video.Comments!.Select(c => c.ToCommentDto()).ToList(),
-            User = video.User!.ToUserDto(),
-            CategoryId = video.CategoryId
+            User = video.User!.ToUserDto()
         };
     }
 
     public static VideoSummaryDto ToVideoSummaryDto(this Video video)
     {
+        var dateDifference = DateTime.Now - video.UploadDate;
+
         return new VideoSummaryDto{
             VideoId = video.VideoId,
             VideoName = video.VideoName,
             ThumbnailUrl = video.ThumbnailUrl,
             VideoLength = video.VideoLength,
             Views = video.Views,
-            UploadDate = video.UploadDate,
+            UploadDate= dateDifference.FormatDateDifference(),
             User = video.User!.ToUserDto(),
             CategoryId = video.CategoryId
         };

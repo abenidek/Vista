@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot/ProfilePics/" />
     <Folder Include="wwwroot/Thumbnails/" />
     <Folder Include="wwwroot/Videos/" />
   </ItemGroup>

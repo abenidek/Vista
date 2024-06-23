@@ -6,11 +6,12 @@ public static class CommentMapper
 {
     public static CommentDto ToCommentDto(this Comment commentModel)
     {
+        var dateDifference = DateTime.Now - commentModel.CreatedAt;
+
         return new CommentDto{
             Id = commentModel.Id,
             Content = commentModel.Content,
-            CreatedAt = commentModel.CreatedAt,
-            VideoId = commentModel.VideoId,
+            PostDate = dateDifference.FormatDateDifference(),
             User = commentModel.User!.ToUserDto()
         };
     }

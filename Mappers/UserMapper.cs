@@ -21,7 +21,8 @@ public static class UserMapper
         {
             Name = user.Name,
             Email = user.Email,
-            UserName = user.UserName
+            UserName = user.UserName,
+            ProfilePicUrl = user.ProfilePicUrl
         };
     }
 
