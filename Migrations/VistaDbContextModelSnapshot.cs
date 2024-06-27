@@ -169,6 +169,23 @@ namespace Vista.Migrations
                     b.ToTable("liked_video");
                 });
 
+            modelBuilder.Entity("Vista.Data.Models.SavedVideo", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid>("VideoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("video_id");
+
+                    b.HasKey("UserId", "VideoId");
+
+                    b.HasIndex("VideoId");
+
+                    b.ToTable("saved_videos");
+                });
+
             modelBuilder.Entity("Vista.Data.Models.User", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -390,6 +407,25 @@ namespace Vista.Migrations
 
                     b.HasOne("Vista.Data.Models.Video", "Video")
                         .WithMany("LikedVideos")
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Video");
+                });
+
+            modelBuilder.Entity("Vista.Data.Models.SavedVideo", b =>
+                {
+                    b.HasOne("Vista.Data.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vista.Data.Models.Video", "Video")
+                        .WithMany()
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -14,4 +14,9 @@ public interface IVideoRepository
     Task<string> DislikeVideoAsync(Guid videoId, Guid userId);
     Task<List<VideoSummaryDto>?> GetTrendingVideosAsync();
     Task<List<VideoSummaryDto>?> GetRecommendedVideosAsync(Guid userId);
+    Task WatchVideoAsync(Guid videoId, Guid userId);
+    Task<List<VideoSummaryDto>?> GetWatchedVideoAsync(Guid userId);
+    Task<string> SaveVideoAsync(Guid videoId, Guid userId);
+    Task<List<VideoSummaryDto>?> GetSavedVideoAsync(Guid userId);
+    Task<List<VideoSummaryDto>> GetByCategoryAsync(int categoryId);
 }

@@ -14,12 +14,13 @@ public static class VideoMapper
             VideoName = video.VideoName,
             VideoDescription = video.VideoDescription,
             VideoUrl = video.VideoUrl,
+            ThumbnailUrl = video.ThumbnailUrl,
             Views =  video.Views,
             Likes = video.Likes,
             Dislikes = video.Dislikes,
             UploadDate= dateDifference.FormatDateDifference(),
             Comments = video.Comments!.Select(c => c.ToCommentDto()).ToList(),
-            User = video.User!.ToUserDto()
+            User = video.User!.ToUserDetailDto()
         };
     }
 
@@ -35,6 +36,24 @@ public static class VideoMapper
             Views = video.Views,
             UploadDate= dateDifference.FormatDateDifference(),
             User = video.User!.ToUserDto(),
+            CategoryId = video.CategoryId
+        };
+    }
+
+    public static MyVideoDto ToMyVideoDto(this Video video)
+    {
+        var dateDifference = DateTime.Now - video.UploadDate;
+
+        return new MyVideoDto{
+            VideoId = video.VideoId,
+            VideoName = video.VideoName,
+            VideoDescription = video.VideoDescription,
+            ThumbnailUrl = video.ThumbnailUrl,
+            VideoLength = video.VideoLength,
+            Views = video.Views,
+            Likes = video.Likes,
+            Dislikes = video.Dislikes,
+            UploadDate= dateDifference.FormatDateDifference(),
             CategoryId = video.CategoryId
         };
     }

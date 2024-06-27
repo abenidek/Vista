@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Vista.Data.AppDbContext;
 using Vista.Data.DTOs;
 using Vista.Data.Models;
@@ -26,9 +27,13 @@ namespace Vista.Repository
                 return null;
 
             var VideoDto = Video.ToVideoDetailDto();
-            VideoDto.IsLiked = await _context.LikedVideos.AnyAsync(v => v.VideoId == id && v.UserId == currentUserId);
-            VideoDto.IsDisliked = await _context.DislikedVideos.AnyAsync(v => v.VideoId == id && v.UserId == currentUserId);
-            VideoDto.isUserFollowed = await _context.UserFollowers.AnyAsync(f => f.FollowedUserId == Video.UserId && f.FollowerUserId == currentUserId);
+
+            if (!currentUserId.ToString().IsNullOrEmpty())
+            {
+                VideoDto.IsLiked = await _context.LikedVideos.AnyAsync(v => v.VideoId == id && v.UserId == currentUserId);
+                VideoDto.IsDisliked = await _context.DislikedVideos.AnyAsync(v => v.VideoId == id && v.UserId == currentUserId);
+                VideoDto.User!.isUserFollowed = await _context.UserFollowers.AnyAsync(f => f.FollowedUserId == Video.UserId && f.FollowerUserId == currentUserId);
+            }
 
             return VideoDto;
         }
@@ -47,26 +52,28 @@ namespace Vista.Repository
                     Directory.CreateDirectory(videoPath);
 
                 var VideoFileExtension = Path.GetExtension(videoDto.VideoFile.FileName);
-                var VideoFilePath = Path.Combine(videoPath, $"{Guid.NewGuid()}{VideoFileExtension}");
+                var VideoFileName = $"{Guid.NewGuid()}{VideoFileExtension}";
+                var VideoFilePath = Path.Combine(videoPath, VideoFileName);
                 using (var stream = new FileStream(VideoFilePath, FileMode.Create))
                 {
                     await videoDto.VideoFile.CopyToAsync(stream);
                 }
 
-                Video.VideoUrl = VideoFilePath;
+                Video.VideoUrl = Path.Combine("http://localhost:5252", "Videos", VideoFileName);
 
                 var ThumbnailPath = Path.Combine(_env.WebRootPath, "Thumbnails");
                 if (!Directory.Exists(ThumbnailPath))
                     Directory.CreateDirectory(ThumbnailPath);
 
                 var ThumbnailFileExtension = Path.GetExtension(videoDto.ThumbnailFile.FileName);
-                var ThumbnailFilePath = Path.Combine(ThumbnailPath, $"{Guid.NewGuid()}{ThumbnailFileExtension}");
+                var ThumbnailFileName = $"{Guid.NewGuid()}{ThumbnailFileExtension}";
+                var ThumbnailFilePath = Path.Combine(ThumbnailPath, ThumbnailFileName);
                 using (var stream = new FileStream(ThumbnailFilePath, FileMode.Create))
                 {
                     await videoDto.ThumbnailFile.CopyToAsync(stream);
                 }
 
-                Video.ThumbnailUrl = ThumbnailFilePath;
+                Video.ThumbnailUrl = Path.Combine("http://localhost:5252", "Thumbnails", ThumbnailFileName);
 
                 var mediaInfo = await FFmpeg.GetMediaInfo(VideoFilePath);
                 var duration = mediaInfo.Duration;
@@ -92,24 +99,26 @@ namespace Vista.Repository
 
             try
             {
-                if (File.Exists(Video.ThumbnailUrl))
-                    File.Delete(Video.ThumbnailUrl);
-                    
+                var ThumbnailFilePath = Path.Combine(_env.WebRootPath, Video.ThumbnailUrl.TrimStart("http://localhost:5252/".ToCharArray()));
+                if (File.Exists(ThumbnailFilePath))
+                    File.Delete(ThumbnailFilePath);
+
                 var ThumbnailPath = Path.Combine(_env.WebRootPath, "Thumbnails");
                 if (!Directory.Exists(ThumbnailPath))
                     Directory.CreateDirectory(ThumbnailPath);
 
-                var ThumbnailFilePath = Path.Combine(ThumbnailPath, video.ThumbnailFile.FileName);
-                
-                Video.ThumbnailUrl = ThumbnailFilePath;
-                Video.VideoName = video.VideoName;
-                Video.VideoDescription = video.VideoDescription;
-                Video.CategoryId = video.CategoryId;
-
-                using (var stream = new FileStream(ThumbnailFilePath, FileMode.Create))
+                var ThumbnailFileExtension = Path.GetExtension(video.ThumbnailFile.FileName);
+                var ThumbnailFileName = $"{Guid.NewGuid()}{ThumbnailFileExtension}";
+                var ThumbnailFilePathNew = Path.Combine(ThumbnailPath, ThumbnailFileName);
+                using (var stream = new FileStream(ThumbnailFilePathNew, FileMode.Create))
                 {
                     await video.ThumbnailFile.CopyToAsync(stream);
                 }
+
+                Video.ThumbnailUrl = Path.Combine("http://localhost:5252", "Thumbnails", ThumbnailFileName);
+                Video.VideoName = video.VideoName;
+                Video.VideoDescription = video.VideoDescription;
+                Video.CategoryId = video.CategoryId;
 
                 await _context.SaveChangesAsync();
 
@@ -130,11 +139,13 @@ namespace Vista.Repository
 
             try
             {
-                if (File.Exists(Video.VideoUrl))
-                    File.Delete(Video.VideoUrl);
+                var VideoFilePath = Path.Combine(_env.WebRootPath, Video.VideoUrl.TrimStart("http://localhost:5252/".ToCharArray()));
+                if (File.Exists(VideoFilePath))
+                    File.Delete(VideoFilePath);
 
-                if (File.Exists(Video.ThumbnailUrl))
-                    File.Delete(Video.ThumbnailUrl);
+                var ThumbnailFilePath = Path.Combine(_env.WebRootPath, Video.ThumbnailUrl.TrimStart("http://localhost:5252/".ToCharArray()));
+                if (File.Exists(ThumbnailFilePath))
+                    File.Delete(ThumbnailFilePath);
 
                 _context.Videos.Remove(Video);
                 await _context.SaveChangesAsync();
@@ -247,7 +258,7 @@ namespace Vista.Repository
                 .ThenByDescending(v => v.Comments!.Count)
                 .Take(4)
                 .ToListAsync();
-            
+
             return Videos.Select(v => v.ToVideoSummaryDto()).ToList();
         }
 
@@ -272,6 +283,69 @@ namespace Vista.Repository
                 .ToListAsync();
 
             return Videos.Select(v => v.ToVideoSummaryDto()).ToList();
+        }
+
+        public async Task WatchVideoAsync(Guid videoId, Guid userId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var WatchedVideo = await _context.WatchedVideos.FirstOrDefaultAsync(wv => wv.VideoId == videoId && wv.UserId == userId);
+                var Video = await _context.Videos.FirstOrDefaultAsync(v => v.VideoId == videoId);
+
+                if (WatchedVideo is null)
+                {
+                    await _context.WatchedVideos.AddAsync(new WatchedVideo { VideoId = videoId, UserId = userId });
+
+                    Video!.Views++;
+
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<VideoSummaryDto>?> GetWatchedVideoAsync(Guid userId)
+        {
+            var WatchedVideos = await _context.WatchedVideos.Where(wv => wv.UserId == userId).Select(wv => wv.VideoId).ToListAsync();
+
+            return await _context.Videos.Where(v => WatchedVideos.Contains(v.VideoId)).Select(v => v.ToVideoSummaryDto()).ToListAsync();
+        }
+
+        public async Task<string> SaveVideoAsync(Guid videoId, Guid userId)
+        {
+            var SavedVideo = await _context.SavedVideos.FirstOrDefaultAsync(sv => sv.VideoId == videoId && sv.UserId == userId);
+
+            if (SavedVideo is null)
+            {
+                await _context.SavedVideos.AddAsync(new SavedVideo { VideoId = videoId, UserId = userId });
+                await _context.SaveChangesAsync();
+
+                return "Video Saved";
+            }
+
+            _context.SavedVideos.Remove(SavedVideo);
+            await _context.SaveChangesAsync();
+
+            return "Video Removed from Saved";
+        }
+
+        public async Task<List<VideoSummaryDto>?> GetSavedVideoAsync(Guid userId)
+        {
+            var SavedVideos = await _context.SavedVideos.Where(sv => sv.UserId == userId).Select(sv => sv.VideoId).ToListAsync();
+
+            return await _context.Videos.Where(v => SavedVideos.Contains(v.VideoId)).Select(v => v.ToVideoSummaryDto()).ToListAsync();
+        }
+
+        public async Task<List<VideoSummaryDto>> GetByCategoryAsync(int categoryId)
+        {
+            return await _context.Videos.Where(v => v.CategoryId == categoryId).Select(v => v.ToVideoSummaryDto()).ToListAsync();
         }
     }
 }

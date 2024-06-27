@@ -40,6 +40,17 @@ public class UserController(IUserRepository _userRepo) : ControllerBase
         return Ok(User);
     }
 
+    [HttpGet("myprofile/{id}")]
+    public async Task<IActionResult> GetMyProfileAsync([FromRoute] Guid id)
+    {
+        var User = await _userRepo.GetMyProfileAsync(id);
+
+        if (User is null)
+            return NotFound();
+        
+        return Ok(User);
+    }
+
     [HttpGet("follower/{id}")]
     public async Task<IActionResult> GetFollowersAsync([FromRoute] Guid id)
     {

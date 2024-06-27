@@ -47,6 +47,28 @@ public class UserRepository(VistaDbContext _context) : IUserRepository
         return UserProfileDto;
     }
 
+    public async Task<MyProfileDto?> GetMyProfileAsync(Guid userId)
+    {
+        var User = await _context.Users.Include(u => u.Videos!).FirstOrDefaultAsync(u => u.UserId == userId);
+
+        if (User is null)
+            return null;
+
+        int totalViews = 0;
+        int totalLikes = 0;
+        foreach(Video video in User!.Videos!)
+        {
+            totalViews += video.Views;
+            totalLikes += video.Likes;
+        }
+
+        var UserDto = User?.ToMyProfileDto();
+        UserDto!.TotalViews = totalViews;
+        UserDto!.TotalLikes = totalLikes;
+        
+        return UserDto;
+    }
+
     public async Task<List<UserDto>?> GetFollowersAsync(Guid userId)
     {
         var Followers = await _context.UserFollowers.Where(f => f.FollowedUserId == userId).Include(f => f.FollowerUser).Select(f => f.FollowerUser).ToListAsync();

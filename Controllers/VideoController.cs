@@ -107,4 +107,58 @@ public class VideoController(IVideoRepository _videoRepo) : ControllerBase
         
         return Ok(Videos);
     }
+
+    [HttpPut]
+    [Route("watch/{id}")]
+    public async Task<IActionResult> WatchAsync([FromRoute] Guid id, Guid userId)
+    {
+        await _videoRepo.WatchVideoAsync(id, userId);
+
+        return Ok();
+    }
+
+    [HttpGet]
+    [Route("history/{id}")]
+    public async Task<IActionResult> GetWatchedAsync([FromRoute] Guid id)
+    {
+        var Videos = await _videoRepo.GetWatchedVideoAsync(id);
+
+        if(Videos is null)
+            return NoContent();
+        
+        return Ok(Videos);
+    }
+
+    [HttpPut]
+    [Route("save/{id}")]
+    public async Task<IActionResult> SaveAsync([FromRoute] Guid id, Guid userId)
+    {
+        await _videoRepo.SaveVideoAsync(id, userId);
+
+        return Ok();
+    }
+
+    [HttpGet]
+    [Route("saved/{id}")]
+    public async Task<IActionResult> GetSavedAsync([FromRoute] Guid id)
+    {
+        var Videos = await _videoRepo.GetSavedVideoAsync(id);
+
+        if(Videos is null)
+            return NoContent();
+        
+        return Ok(Videos);
+    }
+
+    [HttpGet]
+    [Route("category/{id}")]
+    public async Task<IActionResult> GetByCategoryAsync([FromRoute] int id)
+    {
+        var Videos = await _videoRepo.GetByCategoryAsync(id);
+
+        if(Videos is null)
+            return NoContent();
+        
+        return Ok(Videos);
+    }
 }

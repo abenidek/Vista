@@ -13,6 +13,7 @@ namespace Vista.Data.AppDbContext
         public DbSet<DislikedVideo> DislikedVideos { get; set; }
         public DbSet<WatchedVideo> WatchedVideos { get; set; }
         public DbSet<UserFollower> UserFollowers { get; set; }
+        public DbSet<SavedVideo> SavedVideos { get; set; }
 
         public VistaDbContext(DbContextOptions<VistaDbContext> options) : base(options)
         {
@@ -87,6 +88,8 @@ namespace Vista.Data.AppDbContext
                     .WithMany(u => u.Followers)
                     .HasForeignKey(f => f.FollowedUserId);
             });
+
+            modelBuilder.Entity<SavedVideo>().HasKey(sv => new { sv.UserId, sv.VideoId });
         }
     }
 }
